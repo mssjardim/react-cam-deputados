@@ -1,28 +1,44 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
-class App extends Component {
-  render() {
+import { Paginacao } from './components/Paginacao';
+import { DeputadoList } from './components/Deputados';
+
+import * as api from './api';
+
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      links: [],
+      deputados: [],
+    };
+  }
+
+  componentDidMount = () => {
+    this.request();
+  };
+
+  request = (url) => {
+    api.getDeputados(url).then((data) => {
+      this.setState({
+        links: data.links,
+        deputados: data.dados,
+      });
+    });
+  };
+
+  render = () => {
+    const { deputados, links } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <h1>Hello React</h1>
+
+        <Paginacao links={links} request={this.request} />
+        <DeputadoList deputados={deputados} />
       </div>
     );
-  }
+  };
 }
 
 export default App;
